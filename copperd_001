@@ -1,0 +1,44 @@
+use_bpm 88
+
+in_thread do
+  loop do
+    cue :tick
+    sleep 8
+  end
+end
+
+in_thread do
+  loop do
+    sync :tick
+    8.times do
+      sample :drum_cymbal_soft, amp: 0.5
+      sleep 1
+    end
+  end
+end
+
+with_fx :reverb, room: 0.8 do
+  with_fx :lpf, cutoff: 88 do
+    in_thread do
+      loop do
+        sync :tick
+        sample :drum_bass_hard
+      end
+    end
+  end
+end
+
+in_thread do
+  loop do
+    sync :tick
+    sleep rrand_i(1, 3)
+    sample :drum_tom_mid_soft
+    sleep rrand_i(1, 3)
+    sample :drum_tom_lo_soft
+
+    20.times do
+      sample :elec_blip, decay: 0.1, pan: rrand(-1, 1)
+      sleep rrand(0.05, 0.15)
+    end
+  end
+end
